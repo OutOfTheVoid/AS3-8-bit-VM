@@ -1,11 +1,11 @@
 package com.vm
 {
 	
-	public final class processor
+	public final class Processor
 	{
 		
-		private var mem:memory;
-		private var dbs:dataBus;
+		private var mem:Memory;
+		private var dbs:DataBus;
 		
 		private var rad:Boolean = false;
 		private var ien:Boolean = false; // interrupts enabled
@@ -17,23 +17,23 @@ package com.vm
 		
 		private var STP:uint = 0; // Stack pointer
 		
-		private var AX:uint = 0;  // General purpose registers ( 8-bit )
+		private var AX:uint = 0;  // General purpose Registers ( 8-bit )
 		private var BX:uint = 0;
 		private var CX:uint = 0;
 		private var DX:uint = 0;
 		private var MX:uint = 0;
 		private var NX:uint = 0;
 		
-		private var IX:uint = 0;  // Adressing registers ( 16-bit )
+		private var IX:uint = 0;  // Adressing Registers ( 16-bit )
 		private var IY:uint = 0;
 		
-		private var IA:uint = 0;  // Accumulator register ( 16-bit )
+		private var IA:uint = 0;  // Accumulator Register ( 16-bit )
 		
 		private var NSINC:uint = 0;
 		
 		private var ASC:Vector.<Function>;
 		
-		public final function processor ( Memory:memory, DataBus:dataBus ) : void
+		public final function Processor ( Memory:Memory, DataBus:DataBus ) : void
 		{
 			
 			mem = Memory;
@@ -114,7 +114,7 @@ package com.vm
 			
 		};
 		
-		private final function STR () : void // Set register
+		private final function STR () : void // Set Register
 		{
 			
 			var reg:uint;
@@ -127,7 +127,7 @@ package com.vm
 			
 		};
 		
-		private final function STM () : void // Set memory
+		private final function STM () : void // Set Memory
 		{
 			
 			var mad:int;
@@ -175,7 +175,7 @@ package com.vm
 			
 		};
 		
-		private final function JPR () : void // Jump to address in register
+		private final function JPR () : void // Jump to address in Register
 		{
 			
 			var reg1:uint;
@@ -216,7 +216,7 @@ package com.vm
 			
 		};
 		
-		private final function INC8 () : void // Increments registers
+		private final function INC8 () : void // Increments Registers
 		{
 			
 			var reg:uint;
@@ -230,7 +230,7 @@ package com.vm
 			
 		};
 		
-		private final function DEC8 () : void // Increments registers
+		private final function DEC8 () : void // Increments Registers
 		{
 			
 			var reg:uint;
@@ -244,7 +244,7 @@ package com.vm
 			
 		};
 		
-		private final function ADC8 () : void // Adds together an 8 bit register and constant
+		private final function ADC8 () : void // Adds together an 8 bit Register and constant
 		{
 			
 			var reg:uint;
@@ -261,7 +261,7 @@ package com.vm
 			
 		};
 		
-		private final function SBC8 () : void // Subtracts a constant from an 8-bit register
+		private final function SBC8 () : void // Subtracts a constant from an 8-bit Register
 		{
 			
 			var reg:uint;
@@ -278,7 +278,7 @@ package com.vm
 			
 		};
 		
-		private final function MLC8 () : void // Multiplies a constant and an 8-bit register
+		private final function MLC8 () : void // Multiplies a constant and an 8-bit Register
 		{
 			
 			var reg:uint;
@@ -295,7 +295,7 @@ package com.vm
 			
 		};
 		
-		private final function DVC8 () : void // Divides an 8-bit register by a constant
+		private final function DVC8 () : void // Divides an 8-bit Register by a constant
 		{
 			
 			var reg:uint;
@@ -312,7 +312,7 @@ package com.vm
 			
 		};
 		
-		private final function ADR8 () : void // Adds two 8-bit registers
+		private final function ADR8 () : void // Adds two 8-bit Registers
 		{
 			
 			var reg1:uint;
@@ -330,7 +330,7 @@ package com.vm
 			
 		}
 		
-		private final function SBR8 () : void // Subtracts one 8-bit register from another
+		private final function SBR8 () : void // Subtracts one 8-bit Register from another
 		{
 			
 			var reg1:uint;
@@ -366,7 +366,7 @@ package com.vm
 			
 		}
 		
-		private final function DVR8 () : void // Divides one 8-bit register by another
+		private final function DVR8 () : void // Divides one 8-bit Register by another
 		{
 			
 			var reg1:uint;
@@ -396,7 +396,7 @@ package com.vm
 			
 		};
 		
-		private final function PUSHR () : void // pushes a register
+		private final function PUSHR () : void // pushes a Register
 		{
 			
 			var reg:uint;
@@ -410,7 +410,7 @@ package com.vm
 			
 		};
 		
-		private final function POP () : void // pops into a register
+		private final function POP () : void // pops into a Register
 		{
 			
 			var reg:uint;
@@ -424,7 +424,7 @@ package com.vm
 			
 		};
 		
-		private final function SMR () : void // Sets a memory pocket to a register
+		private final function SMR () : void // Sets a Memory pocket to a Register
 		{
 			
 			var add:uint;
@@ -439,7 +439,7 @@ package com.vm
 			
 		};
 		
-		private final function SRM () : void // Sets a register to a memory pocket
+		private final function SRM () : void // Sets a Register to a Memory pocket
 		{
 			
 			var reg:uint;
@@ -663,7 +663,7 @@ package com.vm
 			
 		};
 		
-		// ---- [ register functions ] ---- //
+		// ---- [ Register functions ] ---- //
 		
 		private final function setReg ( reg:uint, val:uint ) : void
 		{
@@ -770,7 +770,7 @@ package com.vm
 			
 		};
 		
-		// ---- [ memory access functions ] ---- //
+		// ---- [ Memory access functions ] ---- //
 		
 		private final function getByteAt ( addr:uint ) : uint
 		{

@@ -1,7 +1,7 @@
 package com.asm
 {
 	
-	internal class args
+	internal class Args
 	{
 		
 		public static const REGISTER:String      =    "REGIS";

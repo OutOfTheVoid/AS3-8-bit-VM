@@ -2,12 +2,12 @@ package com.vm
 {
 	import flash.events.EventDispatcher;
 	
-	public class dataBus extends EventDispatcher
+	public class DataBus extends EventDispatcher
 	{
 		
 		public static const INTERRUPT_EVENT:String = "CPU_INTERRUPT";
 		
-		public function dataBus ()
+		public function DataBus ()
 		{
 			
 		}
@@ -33,7 +33,7 @@ package com.vm
 		internal function INTERRUPT ( num:uint, busData:uint ) : void
 		{
 			
-			var event:interruptEvent = new interruptEvent ( num, busData );
+			var event:InterruptEvent = new InterruptEvent ( num, busData );
 			dispatchEvent ( event );
 			return;
 			

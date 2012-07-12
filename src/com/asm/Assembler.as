@@ -1,11 +1,11 @@
 package com.asm
 {
 	
-	import com.asm.architechture;
+	import com.asm.Architechture;
 	
 	import flash.utils.ByteArray;
 	
-	public class assembler
+	public class Assembler
 	{
 		
 		private var asm:String;
@@ -17,7 +17,7 @@ package com.asm
 		private var binReady:Boolean = false;
 		private var entryPoint:uint = 0;
 		
-		public function assembler ()
+		public function Assembler ()
 		{	
 		};
 		
@@ -73,7 +73,7 @@ package com.asm
 			var byte:uint = 0;
 			var blk:String;
 			var opnum:uint;
-			var op:opcode;
+			var op:Opcode;
 			var vdat:uint;
 			var vsz:uint;
 			var oargs:Vector.<String>;
@@ -122,13 +122,13 @@ package com.asm
 					
 					// using said list and the tag, figure out the appropriate operation
 					opnum = solveIstruction ( blk, oargs );
-					op = architechture.OPCODE_SET [ opnum ];
+					op = Architechture.OPCODE_SET [ opnum ];
 					
-					// write the opcode
+					// write the Opcode
 					bin.position = byte;
 					bin.writeByte ( ( op.code as int ) - 128 );
 					
-					// write arguments according to the defined opcode pattern
+					// write arguments according to the defined Opcode pattern
 					for ( var on:uint = 0; on < op.arguments.length; on ++ )
 					{
 						
@@ -136,7 +136,7 @@ package com.asm
 						{
 							
 							// Adress argument
-							case args.ADDRESS:
+							case Args.ADDRESS:
 								
 								// Refrence 
 								if ( blockIsRefrence ( blocks [ i + on + 1 ] ) )
@@ -169,7 +169,7 @@ package com.asm
 								
 								break;
 								// Constant argument
-							case args.CONSTANT:
+							case Args.CONSTANT:
 								
 								vdat = getConstantValue ( blocks [ i + on + 1 ] );
 								
@@ -178,14 +178,14 @@ package com.asm
 							
 								break;
 								// Register argument
-							case args.REGISTER:
+							case Args.REGISTER:
 								
 								bin.writeByte ( ( regNum ( blocks [ i + on + 1 ] ) as int ) - 128 );
 								qoff ++;
 								
 								break;
 								// Register pair argument
-							case args.DOUBLE_REGISTER:
+							case Args.DOUBLE_REGISTER:
 								
 								var arth:Array = seperateDoubleRegister ( blocks [ i + on + 1 ] );
 								bin.writeByte ( ( regNum ( arth [ 0 ] ) as int ) - 128 );
@@ -307,11 +307,11 @@ package com.asm
 		private final function solveIstruction ( Itag:String, argTypes:Vector.<String> ):uint
 		{
 			
-			var i:instruction;
-			for ( var n:uint = 0; n < architechture.INSTRUCTION_SET.length; n ++ )
+			var i:Instruction;
+			for ( var n:uint = 0; n < Architechture.INSTRUCTION_SET.length; n ++ )
 			{
-				if ( architechture.INSTRUCTION_SET [ n ].tag == Itag.toLocaleUpperCase () )
-					i = architechture.INSTRUCTION_SET [ n ];
+				if ( Architechture.INSTRUCTION_SET [ n ].tag == Itag.toLocaleUpperCase () )
+					i = Architechture.INSTRUCTION_SET [ n ];
 			}
 			
 			if ( i.ops.length == 1 )
@@ -343,15 +343,15 @@ package com.asm
 			
 		}
 		
-		//returns the numerical value of a register based on it's tag
+		//returns the numerical value of a Register based on it's tag
 		private final function regNum ( block:String ) : uint
 		{
 			
-			for ( var i:uint = 0; i < architechture.REGSITERS.length; i ++ )
+			for ( var i:uint = 0; i < Architechture.REGSITERS.length; i ++ )
 			{
 				
-				if ( block == architechture.REGSITERS [ i ].tag )
-					return architechture.REGSITERS [ i ].num;
+				if ( block == Architechture.REGSITERS [ i ].tag )
+					return Architechture.REGSITERS [ i ].num;
 			
 			}
 			
@@ -388,21 +388,21 @@ package com.asm
 		{
 			
 			if ( blockIsRegister ( block ) )
-				return args.REGISTER;
+				return Args.REGISTER;
 			
 			if ( blockIsDoubleRegister ( block ) )
-				return args.DOUBLE_REGISTER;
+				return Args.DOUBLE_REGISTER;
 			
 			if ( blockIsRefrence ( block ) )
-				return args.ADDRESS; 
+				return Args.ADDRESS; 
 			
 			if ( blockIsConstant ( block ) )
 			{
 				
 				if ( block.charAt ( 0 ) == '!' )
-					return args.ADDRESS;
+					return Args.ADDRESS;
 				
-				return args.CONSTANT;
+				return Args.CONSTANT;
 			
 			}
 			
@@ -491,7 +491,7 @@ package com.asm
 			
 		};
 		
-		//Seperates a double register into it's components.
+		//Seperates a double Register into it's components.
 		private final function seperateDoubleRegister ( block:String ) : Array
 		{
 			
@@ -568,12 +568,12 @@ package com.asm
 		
 		};
 		
-		//Tests to see if a block is an instruction
+		//Tests to see if a block is an Instruction
 		private final function blockIsInstruction ( block:String ) : Boolean
 		{
 			
-			for ( var i:uint = 0; i < architechture.INSTRUCTION_SET.length; i ++ )
-				if ( block.toLocaleUpperCase() == architechture.INSTRUCTION_SET [ i ].tag )
+			for ( var i:uint = 0; i < Architechture.INSTRUCTION_SET.length; i ++ )
+				if ( block.toLocaleUpperCase() == Architechture.INSTRUCTION_SET [ i ].tag )
 					return true;
 			
 			return false;
@@ -588,19 +588,19 @@ package com.asm
 		
 		};
 		
-		//Checks if a block is a register
+		//Checks if a block is a Register
 		private final function blockIsRegister ( block:String ) : Boolean
 		{
 			
-			for ( var i:uint = 0; i < architechture.REGSITERS.length; i ++ )
-				if ( block == architechture.REGSITERS [ i ].tag )
+			for ( var i:uint = 0; i < Architechture.REGSITERS.length; i ++ )
+				if ( block == Architechture.REGSITERS [ i ].tag )
 					return true;
 			
 			return false;
 		
 		};
 		
-		//Tests to see if a block is a double register
+		//Tests to see if a block is a double Register
 		private final function blockIsDoubleRegister ( block:String ) : Boolean
 		{
 			

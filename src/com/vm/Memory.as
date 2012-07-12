@@ -4,13 +4,13 @@ package com.vm
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
-	public final class memory
+	public final class Memory
 	{
 		
 		private var data:ByteArray = new ByteArray ();
 		private var size:uint;
 		
-		public final function memory ( Size:uint = 65536 ) : void
+		public final function Memory ( Size:uint = 65536 ) : void
 		{
 			
 			data.length = Size;
