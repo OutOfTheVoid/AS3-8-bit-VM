@@ -178,14 +178,14 @@ package com.asm
 							
 								break;
 								// Register argument
-							case Args.Register:
+							case Args.REGISTER:
 								
 								bin.writeByte ( ( regNum ( blocks [ i + on + 1 ] ) as int ) - 128 );
 								qoff ++;
 								
 								break;
 								// Register pair argument
-							case Args.DOUBLE_Register:
+							case Args.DOUBLE_REGISTER:
 								
 								var arth:Array = seperateDoubleRegister ( blocks [ i + on + 1 ] );
 								bin.writeByte ( ( regNum ( arth [ 0 ] ) as int ) - 128 );
@@ -388,10 +388,10 @@ package com.asm
 		{
 			
 			if ( blockIsRegister ( block ) )
-				return Args.Register;
+				return Args.REGISTER;
 			
 			if ( blockIsDoubleRegister ( block ) )
-				return Args.DOUBLE_Register;
+				return Args.DOUBLE_REGISTER;
 			
 			if ( blockIsRefrence ( block ) )
 				return Args.ADDRESS; 
