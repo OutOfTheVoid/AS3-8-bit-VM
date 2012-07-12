@@ -1,13 +1,13 @@
 package com.asm
 {
 	
-	internal class register
+	internal class Register
 	{
 		
 		public var tag:String;
 		public var num:uint;
 		
-		public function register ( tag:String, num:uint )
+		public function Register ( tag:String, num:uint )
 		{
 			
 			this.tag = tag;

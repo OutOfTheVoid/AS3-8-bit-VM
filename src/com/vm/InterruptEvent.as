@@ -2,12 +2,12 @@ package com.vm
 {
 	import flash.events.Event;
 	
-	public class interruptEvent extends Event
+	public class InterruptEvent extends Event
 	{
 		
 		public var data:uint;
 		
-		public function interruptEvent ( num:uint, data:uint )
+		public function InterruptEvent ( num:uint, data:uint )
 		{
 			
 			super ( "CPU_INTERRUPT" + num.toString ( 16 ) );
