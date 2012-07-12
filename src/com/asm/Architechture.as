@@ -65,8 +65,8 @@ package com.asm
 		private static const XOR:Instruction = new Instruction ( "XOR", new <Opcode> [ _XORC8, _XORR8 ] );
 		private static const NOT:Instruction = new Instruction ( "NOT", new <Opcode> [ _NOT8 ] );
 		
-		public static const Opcode_SET:Vector.<Opcode> = new <Opcode> [ _NOP, _STR, _STM, _RLA, _DRA, _JPC, _JPR, _JNZ, _INC8, _DEC8, _ADDC8, _SUBC8, _MULC8, _DIVC8, _ADDR8, _SUBR8, _MULR8, _DIVR8, _PUSHC, _PUSHR, _POP, _SMR, _SRM, _INT, _CLI, _SEI, _RTI, _ANDC8, _ORC8, _XORC8, _ANDR8, _ORR8, _XORR8, _NOT8, _CPR, _ACTR, _ACFR ];
-		public static const Instruction_SET:Vector.<Instruction> = new <Instruction> [ NOP, MOV, RLA, DRA, JMP, JNZ, INC, DEC, ADD, SUB, MUL, DIV, PUSH, POP, INT, CLI, SEI, RTI, AND, OR, XOR, NOT ];
+		public static const OPCODE_SET:Vector.<Opcode> = new <Opcode> [ _NOP, _STR, _STM, _RLA, _DRA, _JPC, _JPR, _JNZ, _INC8, _DEC8, _ADDC8, _SUBC8, _MULC8, _DIVC8, _ADDR8, _SUBR8, _MULR8, _DIVR8, _PUSHC, _PUSHR, _POP, _SMR, _SRM, _INT, _CLI, _SEI, _RTI, _ANDC8, _ORC8, _XORC8, _ANDR8, _ORR8, _XORR8, _NOT8, _CPR, _ACTR, _ACFR ];
+		public static const INSTRUCTION_SET:Vector.<Instruction> = new <Instruction> [ NOP, MOV, RLA, DRA, JMP, JNZ, INC, DEC, ADD, SUB, MUL, DIV, PUSH, POP, INT, CLI, SEI, RTI, AND, OR, XOR, NOT ];
 		
 		private static const AX:Register = new Register ( "AX", 0 );
 		private static const BX:Register = new Register ( "BX", 1 );

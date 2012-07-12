@@ -76,7 +76,7 @@ package com.asm
 			var op:Opcode;
 			var vdat:uint;
 			var vsz:uint;
-			var oArgs:Vector.<String>;
+			var oargs:Vector.<String>;
 			
 			entryPoint = 0;
 			
@@ -106,7 +106,7 @@ package com.asm
 					var io:uint = 1;
 					var qoff:uint = 1;
 					
-					oArgs = new Vector.<String> ();
+					oargs = new Vector.<String> ();
 					
 					// get a list of the argument typyes
 					while ( io + i < blocks.length )
@@ -115,14 +115,14 @@ package com.asm
 						if ( ! isArg ( blocks [ i + io ] ) )
 							break;
 						
-						oArgs.push ( getArgType ( blocks [ i + io ] ) );
+						oargs.push ( getArgType ( blocks [ i + io ] ) );
 						io ++
 						
 					}
 					
 					// using said list and the tag, figure out the appropriate operation
-					opnum = solveIstruction ( blk, oArgs );
-					op = Architechture.Opcode_SET [ opnum ];
+					opnum = solveIstruction ( blk, oargs );
+					op = Architechture.OPCODE_SET [ opnum ];
 					
 					// write the Opcode
 					bin.position = byte;
@@ -308,28 +308,28 @@ package com.asm
 		{
 			
 			var i:Instruction;
-			for ( var n:uint = 0; n < Architechture.Instruction_SET.length; n ++ )
+			for ( var n:uint = 0; n < Architechture.INSTRUCTION_SET.length; n ++ )
 			{
-				if ( Architechture.Instruction_SET [ n ].tag == Itag.toLocaleUpperCase () )
-					i = Architechture.Instruction_SET [ n ];
+				if ( Architechture.INSTRUCTION_SET [ n ].tag == Itag.toLocaleUpperCase () )
+					i = Architechture.INSTRUCTION_SET [ n ];
 			}
 			
 			if ( i.ops.length == 1 )
 				return i.ops [ 0 ].code;
 			
-			var oArgs:Vector.<String>;
+			var oargs:Vector.<String>;
 			
 			for ( var k:uint = 0; k < i.ops.length; k ++ )
 			{
 				
-				oArgs = i.ops [ k ].arguments;
-				if ( argTypes.length == oArgs.length )
-					for ( var t:uint = 0; t < oArgs.length; t ++ )
+				oargs = i.ops [ k ].arguments;
+				if ( argTypes.length == oargs.length )
+					for ( var t:uint = 0; t < oargs.length; t ++ )
 					{
 						
-						if ( argTypes [ t ] == oArgs [ t ] )
+						if ( argTypes [ t ] == oargs [ t ] )
 						{
-							if ( t == oArgs.length - 1 )
+							if ( t == oargs.length - 1 )
 								return i.ops [ k ].code;
 						}
 						else
@@ -572,8 +572,8 @@ package com.asm
 		private final function blockIsInstruction ( block:String ) : Boolean
 		{
 			
-			for ( var i:uint = 0; i < Architechture.Instruction_SET.length; i ++ )
-				if ( block.toLocaleUpperCase() == Architechture.Instruction_SET [ i ].tag )
+			for ( var i:uint = 0; i < Architechture.INSTRUCTION_SET.length; i ++ )
+				if ( block.toLocaleUpperCase() == Architechture.INSTRUCTION_SET [ i ].tag )
 					return true;
 			
 			return false;
