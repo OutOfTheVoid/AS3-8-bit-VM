@@ -1,0 +1,87 @@
+Code | aruments | Operation
+-----------------------------
+NOP | [] : No operation
+
+MOV | [ register, value ] : set register to value
+[ adress, value ] : set adress to value
+[ adress, register ] : set value at adress to register
+[ register, adress ] : set register to value at adress
+[ register, register ] : set register 1 t register 2
+[ register, double register ] : set register to value pointer to by double register
+[ double register, register ] : set value at adress pointed to by double registers to register
+
+RLA | [] : Relative addressing mode
+
+DRA | [] : Direct addressing mode
+
+JMP | [ adress ] : Jump to adress
+[ double register ] : Jump to adress in double register
+
+JNZ | [ adress, register ] : Jump to adress if register is not 0
+
+INC | [ register ] : Increment register
+
+DEC | [ register ] : Decrement register
+
+ADD | [ register, value ] : Add constant and register
+[ register, register ] : Add to registers
+
+SUB | [ register, value ] : Subtract constant from register
+[ register, register ] : Subtract register2 from register 1
+
+MUL | [ register, value ] : Multiply constant from register
+[ register, register ] : Multiply register1 and register 2
+
+DIV | [ register, value ] : Divide register by constant
+[ register, register ] : Divide register1 by register 2
+
+PUSH | [ value ] : Push value onto stack
+[ register ] : Push register onto stack
+
+POP | [ register ] : Pop register from stack to register
+
+INT | [ value, double register ] : Interrupt at number ( value ) with the double register as data
+
+CLI | [] : Clear interrupt flag
+SEI | [] : Set interrupt flag
+
+RTI | [ value ] : Allow interrupts again after ( value ) ticks
+
+AND | [ register, constant ] : Bitwise AND of register and constant
+[ register, register ] : Bitwise AND of two registers
+
+OR | [ register, constant ] : Bitwise OR of register and constant
+[ register, register ] : Bitwise OR of two registers
+
+XOR | [ register, constant ] : Bitwise XOR of register and constant
+[ register, register ] : Bitwise XOR of two registers
+
+NOT | [ register ] : Bitwise NOT of a register
+
+
+the registers are:
+Register | description
+-------------------------------
+AX General registers {
+BX
+CX
+DX }
+MX Special purpose register ( store / swap )
+NX Special purpose register ( increment )
+IX- Lower half of addressing register 1
+IX+ Higher half of addressing register 1
+IY- Lower half of addressing register 2
+IY+ Higher half of addressing register 1
+IA- Lower half of accumulator
+IA+ Higher half of accumulator
+
+Compiler assertions:
+Assertion | Meaning
+------------------------------
+#ENTRY Entry point of code
+#RELADDR Relative addressing
+#ABSADDR Direct addressing
+
+Labels:
+labels are done where the label starts with a '-' and comes right before the byte you want to go to.
+You reference a label using the '$' character.

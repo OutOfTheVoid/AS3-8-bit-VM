@@ -1,0 +1,66 @@
+[        Instruction set:        ]
+8-bit + 16-bit addressing
+<----------------------------------------------------------------->
+OP# |  NAME   |  PARAMETERS   | MARKS |  DESCRIPTION
+-------------------------------------------------------------------
+0   |  NOP    | :             |       | No operation
+1   |  STR    | : REG VAL     |   m   | Set register
+2   |  STM    | : AD- AD+ VAL |   m   | Set memory
+3   |  RLA    | :             |       | Relative addressing mode
+4   |  DRA    | :             |       | Direct addressing mode
+5   |  JPC    | : AD- AD+     |   j   | Jump to constant
+6   |  JPR    | : REG         |   j   | Jump to register
+7   |  JNZ    | : AD- AD+ REG |   j   | Jump if not zero to constant
+8   |  INC8   | : REG         |       | Increment register       
+9   |  DEC8   | : REG         |       | Decrement register
+10  |  ADDC8  | : REG VAL     |   ~   | Add constant to a register 
+11  |  SUBC8  | : REG VAL     |   ~   | Subtract a constant from a register 
+12  |  MULC8  | : REG VAL     |   ~   | Multiply a constant and a register
+13  |  DIVC8  | : REG VAL     |   ~   | Divide a register by a constant
+14  |  ADDR8  | : REG RG2     |   ~   | Add registert to register 
+15  |  SUBR8  | : REG RG2     |   ~   | Subtract a register from a register
+16  |  MULR8  | : REG RG2     |   ~   | Multiply two registers
+17  |  DIVR8  | : REG RG2     |   ~   | Divide a register by another
+18  |  PUSHC  | : VAL         |   s   | Push a constant onto the stack
+19  |  PUSHR  | : REG         |   s   | Push a register onto the stack
+20  |  POP    | : REG         |   s   | Pop from the stack into a register
+21  |  SMR    | : AD- AD+ REG |   m   | Set a memory location to a register
+22  |  SRM    | : REG AD- AD+ |   m   | Set a register to a memory location
+23  |  INT    | : NUM RG- RG+ |   !   | Call an interrupt
+24  |  CLI    | :             |   !   | Clear interrupt flag
+25  |  SEI    | : AD- AD+     |   !   | Set interrupt flag
+26  |  RTI    | : VAL         |   !   | Return from interrupt and start allowance timeout
+27  |  ANDC8  | : REG VAL     |   ~   | Bitwise AND of a register and constant
+28  |  ORC8   | : REG VAL     |   ~   | Bitwise OR of a register and constant
+29  |  XORC8  | : REG VAL     |   ~   | Bitwise XOR of a register and constant
+30  |  ANDR8  | : REG RG2     |   ~   | Bitwise AND of 2 registers
+31  |  ORR8   | : REG RG2     |   ~   | Bitwise OR of 2 registers
+32  |  XORR8  | : REG RG2     |   ~   | Bitwise XOR of 2 registers
+33  |  NOT8   | : REG         |   ~   | Bitwise NOT of a register
+34  |  CPR    | : REG RG2     |   m   | Copies one register to another
+35  |  ACTR   | : REG RG- RG+ |   m   | Copies the value at the adress in RG-|RG+ to the register
+36  |  ACFR   | : RG- RG+ REG |   m   | Copies the value from the register to the adress in RG-|RG+
+
+<----------------------------------------------------------------->
+
+Marks:  
+--------------------------------
+~ | Outputs to the accumulator 
+s | Stack operation
+! | Interrupt operation
+m | MOV operation
+j | jump operation
+
+<------------------------------->
+
+Registers:
+
+AX  | 0   BX  | 1`
+CX  | 2   DX  | 3
+MX  | 4   NX  | 5
+IX- | 6   IX+ | 7
+IY- | 8   IY+ | 9
+IA- | 10  IA+ | 11
+
+
+

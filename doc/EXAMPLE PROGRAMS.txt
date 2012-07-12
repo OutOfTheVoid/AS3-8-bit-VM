@@ -1,0 +1,53 @@
+[--------------------------------------------------------]
+Test pointers
+
+!!!!!NOT CORRECT FORMAT. WILL NOT COMPILE!!!!!
+
+[12]
+[14]
+STM 1 0 224
+STR AX 1
+STR BX 0
+ACTR AX BX CX
+INT 10 CX BX
+JPC 20
+
+12, 
+14,
+2, 1, 0, 224,
+1, 0, 1,
+1, 1, 0,
+35, 0, 1, 2,
+23, 10, 2, 1,
+5, 20, 0
+
+Entry point: 2
+
+
+[--------------------------------------------------------]
+Print out A-Z continuously
+
+-start
+MOV BX 0x61
+-setax
+MOV AX 10
+-decax
+DEC AX
+JNZ $decax AX
+INT 10 BX!CX
+INC BX
+SUB BX 0x7B
+JNZ $setax IA-
+JMP $start
+
+1, 1, 0x61,
+1, 0, 10,
+9, 0,
+7, 6, 0, 0,
+23, 10, 1, 2,
+8, 1,
+11, 1, 0x7A,
+7, 3, 0, 10,
+5, 0, 0
+
+Entry point: 0
