@@ -1,29 +1,29 @@
 package
 {
 	
-	import com.asm.assembler;
-	import com.vm.dataBus;
-	import com.vm.interruptEvent;
-	import com.vm.memory;
-	import com.vm.processor;
+	import com.asm.Assembler;
+	import com.vm.DataBus;
+	import com.vm.InterruptEvent;
+	import com.vm.Memory;
+	import com.vm.Processor;
 	
 	import flash.display.Sprite;
 	
 	public class Main extends Sprite
 	{
 		
-		private var mem:memory;
-		private var bus:dataBus;
-		private var cpu:processor;
-		private var asm:assembler;
+		private var mem:Memory;
+		private var bus:DataBus;
+		private var cpu:Processor;
+		private var asm:Assembler;
 		
 		public function Main ()
 		{
 			
-			asm = new assembler ();
-			bus = new dataBus ();
-			mem = new memory ( 0x10000 );      // Maximum for 16-bit adress space
-			cpu = new processor ( mem, bus );
+			asm = new Assembler ();
+			bus = new DataBus ();
+			mem = new Memory ( 0x10000 );      // Maximum for 16-bit adress space
+			cpu = new Processor ( mem, bus );
 			
 			asm.loadASM ( 
 				"#ENTRY " +
@@ -55,7 +55,7 @@ package
 			
 		}
 		
-		private function int10 ( I:interruptEvent ) : void
+		private function int10 ( I:InterruptEvent ) : void
 		{
 			
 			trace ( String.fromCharCode ( I.data ) );
