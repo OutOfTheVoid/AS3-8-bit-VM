@@ -33,11 +33,11 @@ package com.vm
 		
 		private var ASC:Vector.<Function>;
 		
-		public final function Processor ( Memory:Memory, DataBus:DataBus ) : void
+		public final function Processor ( memory:Memory, dataBus:DataBus ) : void
 		{
 			
-			mem = Memory;
-			dbs = DataBus;
+			mem = memory;
+			dbs = dataBus;
 			//                      0    1    2    3    4    5    6    7    8     9     10    11    12    13    14    15    16    17    18     19    20   21   22   23   24   25   26    27     28    29     30     31    32     33   34    35    36
 			ASC = new <Function> [ NOP, STR, STM, RLA, DRA, JPC, JPR, JNZ, INC8, DEC8, ADC8, SBC8, MLC8, DVC8, ADR8, SBR8, MLR8, DVR8, PUSHC, PUSHR, POP, SMR, SRM, INT, CLI, SEI, RTI, ANDC8, ORC8, XORC8, ANDR8, ORR8, XORR8, NOT8, CPR, ACTR, ACFR ];
 			STP = mem.length - 1;
