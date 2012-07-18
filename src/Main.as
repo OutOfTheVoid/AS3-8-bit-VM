@@ -26,9 +26,10 @@ package
 			cpu = new Processor ( mem, bus );
 			
 			asm.loadASM ( 
+				"[0x61:sw] " +
 				"#ENTRY " +
 				"-start " +
-				"MOV BX 0x61 " +
+				"MOV BX .sw " +
 				"-setax " +
 				"MOV AX 10 " +
 				"-decax " +

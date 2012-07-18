@@ -151,6 +151,18 @@ package com.asm
 									bin.writeByte ( ( ( ( vdat & 0xFF00 ) as int ) >> 8 ) - 128 );
 									
 								}
+								else if ( blockIsVariable ( blocks [ i + on + 1 ] ) )
+								{
+									
+									vdat = variables [ blocks [ i + on + 1 ].slice ( 1 ) ];
+									
+									if ( radMode )
+										vdat = vdat - byte + 0x7FFF;
+									
+									bin.writeByte ( ( ( vdat & 0x00FF ) as int ) - 128 );
+									bin.writeByte ( ( ( ( vdat & 0xFF00 ) as int ) >> 8 ) - 128 );
+									
+								}
 								// Hard coded
 								else
 								{
@@ -257,7 +269,7 @@ package com.asm
 			
 		};
 		
-		//searches out all the lavels and variables
+		//searches out all the labels and variables
 		private final function idRefs () : void
 		{
 			
@@ -287,7 +299,7 @@ package com.asm
 					byte += sizeOfNum ( num );
 					
 				}
-				else if ( blockIsRefrence ( blk ) || blockIsDoubleRegister ( blk ) )
+				else if ( blockIsRefrence ( blk ) || blockIsDoubleRegister ( blk ) || blockIsVariable ( blk ) )
 					byte += 2;
 				else if ( blockIsLabel ( blk ) )
 				{
@@ -297,7 +309,7 @@ package com.asm
 					
 				}
 				else if ( ! blockIsAssertion ( blk ) )
-					byte ++;
+					byte ++
 				
 			}
 			
@@ -393,7 +405,7 @@ package com.asm
 			if ( blockIsDoubleRegister ( block ) )
 				return Args.DOUBLE_REGISTER;
 			
-			if ( blockIsRefrence ( block ) )
+			if ( blockIsRefrence ( block ) || blockIsVariable ( block ) )
 				return Args.ADDRESS; 
 			
 			if ( blockIsConstant ( block ) )
@@ -509,7 +521,7 @@ package com.asm
 			{
 				
 				cbl = blocks [ i ];
-				if ( ! ( blockIsLabel ( cbl ) || blockIsInstruction ( cbl ) || blockIsData ( cbl ) || blockIsRegister ( cbl ) || blockIsConstant ( cbl ) || blockIsRefrence ( cbl ) || blockIsAssertion ( cbl ) || blockIsDoubleRegister ( cbl ) ) )
+				if ( ! ( blockIsLabel ( cbl ) || blockIsInstruction ( cbl ) || blockIsData ( cbl ) || blockIsRegister ( cbl ) || blockIsConstant ( cbl ) || blockIsRefrence ( cbl ) || blockIsAssertion ( cbl ) || blockIsDoubleRegister ( cbl ) || blockIsVariable ( cbl ) ) )
 					return false;
 				
 			}
@@ -567,6 +579,13 @@ package com.asm
 			return block.charAt ( 0 ) == '-';
 		
 		};
+		
+		private final function blockIsVariable ( block:String ) : Boolean
+		{
+			
+			return "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf ( block.charAt ( 1 ) ) != -1 && block.charAt ( 0 ) == '.';
+			
+		}
 		
 		//Tests to see if a block is an Instruction
 		private final function blockIsInstruction ( block:String ) : Boolean
