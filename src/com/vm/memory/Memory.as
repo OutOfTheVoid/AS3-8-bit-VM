@@ -1,4 +1,4 @@
-package com.vm
+package com.vm.memory
 {
 	
 	import flash.utils.ByteArray;

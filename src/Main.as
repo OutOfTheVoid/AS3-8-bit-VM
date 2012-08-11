@@ -2,10 +2,10 @@ package
 {
 	
 	import com.asm.Assembler;
-	import com.vm.DataBus;
-	import com.vm.InterruptEvent;
-	import com.vm.Memory;
-	import com.vm.Processor;
+	import com.vm.system.DataBus;
+	import com.vm.system.InterruptEvent;
+	import com.vm.memory.Memory;
+	import com.vm.system.Processor;
 	
 	import flash.display.Sprite;
 	

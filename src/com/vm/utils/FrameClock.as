@@ -1,7 +1,7 @@
 package com.vm.utils
 {
 	
-	import com.vm.Processor;
+	import com.vm.system.Processor;
 	
 	import flash.display.Stage;
 	import flash.events.Event;
