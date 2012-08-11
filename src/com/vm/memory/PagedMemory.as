@@ -4,7 +4,7 @@ package com.vm.memory
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
-	public class PagedMemory
+	public class PagedMemory implements IMemoryDevice
 	{
 		
 		private var data:ByteArray;
@@ -12,7 +12,7 @@ package com.vm.memory
 		private var size_paged:uint;
 		private var pageBegin:uint;
 		private var pageEnd:uint;
-		private var page:uint;
+		public var page:uint;
 		private var pages:uint;
 		
 		public function PagedMemory ( SizePaged:uint = 65536, PageBegin:uint = 3, PageSize:uint = 1024, Pages:uint = 64 )
@@ -89,22 +89,26 @@ package com.vm.memory
 			if ( paging && address + file.length >= pageBegin )
 			{
 				
+				var retPage:uint = this.page;
+				
 				if ( pageLoop )
 				{
 					
 					this.page = page;
 					file.position = 0;
 					
-					for ( var n:uint = 0; n < file.length; n ++ )
+					for ( var r:uint = 0; r < file.length; r ++ )
 					{
 						
 						if ( n > pageEnd )
-							page ++;
+							this.page ++;
 						
-						data.position = ( page < pages ) ? resolvePosition ( ( address - pageBegin ) % ( pageEnd - pageBegin + ) + pageBegin ) : resolvePosition ( address );
-						
+						data.position = ( page < pages ) ? resolvePosition ( ( ( ( address + r ) - pageBegin ) % ( pageEnd - pageBegin + 1 ) ) + pageBegin ) : resolvePosition ( address + r );
+						data.writeByte ( file.readByte () );
 						
 					}
+					
+					this.page = retPage;
 					
 				}
 				else
@@ -141,6 +145,8 @@ package com.vm.memory
 			}
 			
 		};
+		
+		public function get length () : uint { return size_paged };
 		
 	}
 	
