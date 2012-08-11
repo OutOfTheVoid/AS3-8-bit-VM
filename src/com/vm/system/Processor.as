@@ -87,13 +87,16 @@ package com.vm.system
 			{
 				
 				ihs = false;
+				
 				STP --;
-				setByteAt ( STP, ISP & 0xFF00 );
+				setByteAt ( STP, ( ISP & 0xFF00 ) >> 8 );
 				STP --;
 				setByteAt ( STP, ISP & 0x00FF );
+				
 				ISP = IRP;
+				
 				STP --;
-				setByteAt ( STP, data & 0xFF00 );
+				setByteAt ( STP, ( data & 0xFF00 ) >> 8 );
 				STP --;
 				setByteAt ( STP, data & 0x00FF );
 				
