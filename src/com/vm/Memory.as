@@ -4,7 +4,7 @@ package com.vm
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
-	public final class Memory
+	public final class Memory implements IMemoryDevice
 	{
 		
 		private var data:ByteArray = new ByteArray ();

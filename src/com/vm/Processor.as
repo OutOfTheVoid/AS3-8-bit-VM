@@ -4,7 +4,7 @@ package com.vm
 	public final class Processor
 	{
 		
-		private var mem:Memory;
+		private var mem:IMemoryDevice;
 		private var dbs:DataBus;
 		
 		private var rad:Boolean = false;
@@ -33,7 +33,7 @@ package com.vm
 		
 		private var ASC:Vector.<Function>;
 		
-		public final function Processor ( memory:Memory, dataBus:DataBus ) : void
+		public final function Processor ( memory:IMemoryDevice, dataBus:DataBus ) : void
 		{
 			
 			mem = memory;
