@@ -29,20 +29,15 @@ package
 			cpu = new Processor ( pmem, bus );
 			
 			asm.loadASM ( 
-				"[0x61:sw] " +
+				"#ABSADDR " +
 				"#ENTRY " +
-				"-start " +
-				"MOV BX .sw " +
-				"-setax " +
-				"MOV AX 10 " +
-				"-decax " +
-				"DEC AX " +
-				"JNZ $decax AX " +
-				"INT 10 BX!CX " +
-				"INC BX " +
-				"SUB BX 0x7B " +
-				"JNZ $setax IA- " +
-				"JMP $start"
+				"MOV CX 128 " +
+				"MOV BX 2 " +
+				"INT 9 CX!AX " +
+				"BSR CX BX " +
+				"INT 9 IA-!AX " +
+				"-ifj " +
+				"JMP $ifj"
 				);
 			
 			asm.compile ();
@@ -56,6 +51,7 @@ package
 			cpu.reset ( asm.entryAdress );
 			
 			bus.startListeningForInterrupt ( 10, int10 );
+			bus.startListeningForInterrupt ( 9, int9 );
 			bus.startListeningForInterrupt ( 2, int2 );
 			
 			for ( var i:uint = 0; i < 10000; i ++ )
@@ -67,6 +63,13 @@ package
 		{
 			
 			trace ( String.fromCharCode ( I.data ) );
+			
+		}
+		
+		private function int9 ( I:InterruptEvent ) : void
+		{
+			
+			trace ( I.data );
 			
 		}
 		

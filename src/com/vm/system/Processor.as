@@ -39,8 +39,8 @@ package com.vm.system
 			
 			mem = memory;
 			dbs = dataBus;
-			//                      0    1    2    3    4    5    6    7    8     9     10    11    12    13    14    15    16    17    18     19    20   21   22   23   24   25   26    27     28    29     30     31    32     33   34    35    36
-			ASC = new <Function> [ NOP, STR, STM, RLA, DRA, JPC, JPR, JNZ, INC8, DEC8, ADC8, SBC8, MLC8, DVC8, ADR8, SBR8, MLR8, DVR8, PUSHC, PUSHR, POP, SMR, SRM, INT, CLI, SEI, RTI, ANDC8, ORC8, XORC8, ANDR8, ORR8, XORR8, NOT8, CPR, ACTR, ACFR ];
+			//                      0    1    2    3    4    5    6    7    8     9     10    11    12    13    14    15    16    17    18     19    20   21   22   23   24   25   26    27     28    29     30     31    32     33   34    35    36    37     38     39     40
+			ASC = new <Function> [ NOP, STR, STM, RLA, DRA, JPC, JPR, JNZ, INC8, DEC8, ADC8, SBC8, MLC8, DVC8, ADR8, SBR8, MLR8, DVR8, PUSHC, PUSHR, POP, SMR, SRM, INT, CLI, SEI, RTI, ANDC8, ORC8, XORC8, ANDR8, ORR8, XORR8, NOT8, CPR, ACTR, ACFR, BSLC8, BSRC8, BSLR8, BSRR8 ];
 			STP = mem.length - 1;
 			
 			return;
@@ -624,8 +624,8 @@ package com.vm.system
 			var reg1:uint;
 			var reg2:uint;
 			var val:uint;
-			reg1 = getByteAt ( ISP + 1 );
-			reg2 = getByteAt ( ISP + 2 );
+			reg1 = getByteAt ( ISP + 2 );
+			reg2 = getByteAt ( ISP + 1 );
 			val = getReg ( reg1 );
 			setReg ( reg2, val );
 			NSINC = 3;
@@ -667,12 +667,80 @@ package com.vm.system
 			
 		};
 		
+		private final function BSLC8 () : void
+		{
+			
+			var vreg:uint;
+			var snum:uint;
+			var reg:uint;
+			vreg = getByteAt ( ISP + 1 );
+			snum = getByteAt ( ISP + 2 );
+			reg = getReg ( vreg );
+			reg = reg << snum;
+			setReg ( 10, reg );
+			setReg ( 11, reg >> 8 );
+			NSINC = 3;
+			
+		}
+		
+		private final function BSRC8 () : void
+		{
+			
+			var vreg:uint;
+			var snum:uint;
+			var reg:uint;
+			vreg = getByteAt ( ISP + 1 );
+			snum = getByteAt ( ISP + 2 );
+			reg = getReg ( vreg );
+			reg = reg >> snum;
+			setReg ( 10, reg );
+			setReg ( 11, 0 );
+			NSINC = 3;
+			
+		}
+		
+		private final function BSLR8 () : void
+		{
+			
+			var vreg:uint;
+			var vreg2:uint;
+			var reg:uint;
+			var reg2:uint;
+			vreg = getByteAt ( ISP + 1 );
+			vreg2 = getByteAt ( ISP + 2 );
+			reg = getReg ( vreg );
+			reg2 = getReg ( vreg2 );
+			reg = reg << reg2;
+			setReg ( 10, reg );
+			setReg ( 11, reg >> 8 );
+			NSINC = 3;
+			
+		}
+		
+		private final function BSRR8 () : void
+		{
+			
+			var vreg:uint;
+			var vreg2:uint;
+			var reg:uint;
+			var reg2:uint;
+			vreg = getByteAt ( ISP + 1 );
+			vreg2 = getByteAt ( ISP + 2 );
+			reg = getReg ( vreg );
+			reg2 = getReg ( vreg2 );
+			reg = reg >> reg2;
+			setReg ( 10, reg );
+			setReg ( 11, reg >> 8 );
+			NSINC = 3;
+			
+		}
+		
 		// ---- [ Register functions ] ---- //
 		
 		private final function setReg ( reg:uint, val:uint ) : void
 		{
 			
-			val = val % 256;
+			val = val & 0xFF;
 			
 			switch ( reg )
 			{
