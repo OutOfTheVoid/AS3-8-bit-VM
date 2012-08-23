@@ -45,6 +45,13 @@ package com.asm
 		private static const _BSRC8:Opcode = new Opcode ( 38, new <String> [ Args.REGISTER, Args.CONSTANT ] );
 		private static const _BSLR8:Opcode = new Opcode ( 39, new <String> [ Args.REGISTER, Args.REGISTER ] );
 		private static const _BSRR8:Opcode = new Opcode ( 40, new <String> [ Args.REGISTER, Args.REGISTER ] );
+		private static const _JIF:Opcode = new Opcode ( 41, new <String> [ Args.CONSTANT, Args.ADDRESS ] );
+		private static const _RTLC8:Opcode = new Opcode ( 42, new <String> [ Args.REGISTER, Args.CONSTANT ] );
+		private static const _RTRC8:Opcode = new Opcode ( 43, new <String> [ Args.REGISTER, Args.CONSTANT ] );
+		private static const _RTLR8:Opcode = new Opcode ( 44, new <String> [ Args.REGISTER, Args.REGISTER ] );
+		private static const _RTRR8:Opcode = new Opcode ( 45, new <String> [ Args.REGISTER, Args.REGISTER ] );
+		private static const _JNF:Opcode = new Opcode ( 46, new <String> [ Args.CONSTANT, Args.ADDRESS ] );
+		private static const _JZ:Opcode = new Opcode ( 47, new <String> [ Args.ADDRESS, Args.REGISTER ] );
 		
 		private static const NOP:Instruction = new Instruction ( "NOP", new <Opcode> [ _NOP ] );
 		private static const MOV:Instruction = new Instruction ( "MOV", new <Opcode> [ _STR, _STM, _SMR, _SRM, _ACTR, _ACFR, _CPR ] );
@@ -70,9 +77,14 @@ package com.asm
 		private static const NOT:Instruction = new Instruction ( "NOT", new <Opcode> [ _NOT8 ] );
 		private static const BSL:Instruction = new Instruction ( "BSL", new <Opcode> [ _BSLC8, _BSLR8 ] );
 		private static const BSR:Instruction = new Instruction ( "BSR", new <Opcode> [ _BSRC8, _BSRR8 ] );
+		private static const JIF:Instruction = new Instruction ( "JIF", new <Opcode> [ _JIF ] );
+		private static const RTL:Instruction = new Instruction ( "RTL", new <Opcode> [ _RTLC8, _RTLR8 ] );
+		private static const RTR:Instruction = new Instruction ( "RTR", new <Opcode> [ _RTRC8, _RTRR8 ] );
+		private static const JNF:Instruction = new Instruction ( "JIF", new <Opcode> [ _JNF ] );
+		private static const JZ:Instruction = new Instruction ( "JZ", new <Opcode> [ _JZ ] );
 		
-		public static const OPCODE_SET:Vector.<Opcode> = new <Opcode> [ _NOP, _STR, _STM, _RLA, _DRA, _JPC, _JPR, _JNZ, _INC8, _DEC8, _ADDC8, _SUBC8, _MULC8, _DIVC8, _ADDR8, _SUBR8, _MULR8, _DIVR8, _PUSHC, _PUSHR, _POP, _SMR, _SRM, _INT, _CLI, _SEI, _RTI, _ANDC8, _ORC8, _XORC8, _ANDR8, _ORR8, _XORR8, _NOT8, _CPR, _ACTR, _ACFR, _BSLC8, _BSRC8, _BSLR8, _BSRR8 ];
-		public static const INSTRUCTION_SET:Vector.<Instruction> = new <Instruction> [ NOP, MOV, RLA, DRA, JMP, JNZ, INC, DEC, ADD, SUB, MUL, DIV, PUSH, POP, INT, CLI, SEI, RTI, AND, OR, XOR, NOT, BSL, BSR ];
+		public static const OPCODE_SET:Vector.<Opcode> = new <Opcode> [ _NOP, _STR, _STM, _RLA, _DRA, _JPC, _JPR, _JNZ, _INC8, _DEC8, _ADDC8, _SUBC8, _MULC8, _DIVC8, _ADDR8, _SUBR8, _MULR8, _DIVR8, _PUSHC, _PUSHR, _POP, _SMR, _SRM, _INT, _CLI, _SEI, _RTI, _ANDC8, _ORC8, _XORC8, _ANDR8, _ORR8, _XORR8, _NOT8, _CPR, _ACTR, _ACFR, _BSLC8, _BSRC8, _BSLR8, _BSRR8, _JIF, _RTLC8, _RTRC8, _RTLR8, _RTRR8, _JNF, _JZ ];
+		public static const INSTRUCTION_SET:Vector.<Instruction> = new <Instruction> [ NOP, MOV, RLA, DRA, JMP, JNZ, INC, DEC, ADD, SUB, MUL, DIV, PUSH, POP, INT, CLI, SEI, RTI, AND, OR, XOR, NOT, BSL, BSR, JIF, RTL, RTR, JNF, JZ ];
 		
 		private static const AX:Register = new Register ( "AX", 0 );
 		private static const BX:Register = new Register ( "BX", 1 );

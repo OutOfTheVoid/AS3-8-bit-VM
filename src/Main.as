@@ -31,11 +31,33 @@ package
 			asm.loadASM ( 
 				"#ABSADDR " +
 				"#ENTRY " +
-				"MOV CX 128 " +
-				"MOV BX 2 " +
+				"MOV CX 3 " +
+				"MOV BX 1 " +
 				"INT 9 CX!AX " +
-				"BSR CX BX " +
-				"INT 9 IA-!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
+				"RTR CX BX " +
+				"MOV CX IA- " +
+				"INT 9 CX!AX " +
 				"-ifj " +
 				"JMP $ifj"
 				);
@@ -69,7 +91,7 @@ package
 		private function int9 ( I:InterruptEvent ) : void
 		{
 			
-			trace ( I.data );
+			trace ( I.data.toString ( 2 ) );
 			
 		}
 		

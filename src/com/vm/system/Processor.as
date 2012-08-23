@@ -8,8 +8,6 @@ package com.vm.system
 		private var mem:IMemoryDevice;
 		private var dbs:DataBus;
 		
-		private var rad:Boolean = false;
-		private var ien:Boolean = false; // interrupts enabled
 		private var ihs:Boolean = true;  // interrupt handler satisfied
 		private var ito:uint = 0;        // interrupt time out
 		
@@ -30,6 +28,11 @@ package com.vm.system
 		
 		private var IA:uint = 0;  // Accumulator Register ( 16-bit )
 		
+		private var CF:Boolean = false; // Carry flag
+		private var NF:Boolean = false; // Interrupt flag
+		private var ZF:Boolean = false; // Zero flag
+		private var AF:Boolean = false; // Adressing flag
+		
 		private var NSINC:uint = 0;
 		
 		private var ASC:Vector.<Function>;
@@ -39,8 +42,8 @@ package com.vm.system
 			
 			mem = memory;
 			dbs = dataBus;
-			//                      0    1    2    3    4    5    6    7    8     9     10    11    12    13    14    15    16    17    18     19    20   21   22   23   24   25   26    27     28    29     30     31    32     33   34    35    36    37     38     39     40
-			ASC = new <Function> [ NOP, STR, STM, RLA, DRA, JPC, JPR, JNZ, INC8, DEC8, ADC8, SBC8, MLC8, DVC8, ADR8, SBR8, MLR8, DVR8, PUSHC, PUSHR, POP, SMR, SRM, INT, CLI, SEI, RTI, ANDC8, ORC8, XORC8, ANDR8, ORR8, XORR8, NOT8, CPR, ACTR, ACFR, BSLC8, BSRC8, BSLR8, BSRR8 ];
+			//                      0    1    2    3    4    5    6    7    8     9     10    11    12    13    14    15    16    17    18     19    20   21   22   23   24   25   26    27     28    29     30     31    32     33   34    35    36    37     38     39     40    41    42     43     44     45    46   47
+			ASC = new <Function> [ NOP, STR, STM, RLA, DRA, JPC, JPR, JNZ, INC8, DEC8, ADC8, SBC8, MLC8, DVC8, ADR8, SBR8, MLR8, DVR8, PUSHC, PUSHR, POP, SMR, SRM, INT, CLI, SEI, RTI, ANDC8, ORC8, XORC8, ANDR8, ORR8, XORR8, NOT8, CPR, ACTR, ACFR, BSLC8, BSRC8, BSLR8, BSRR8, JIF, RTLC8, RTRC8, RTLR8, RTRR8, JNF, JZ ];
 			STP = mem.length - 1;
 			
 			return;
@@ -139,7 +142,7 @@ package com.vm.system
 			mad = getDoubleAt ( ISP + 1 );
 			val = getByteAt ( ISP + 3 );
 			NSINC = 4;
-			if ( rad )
+			if ( AF )
 				setByteAt ( mad - 0x7FFF + ISP, val );
 			else
 				setByteAt ( mad, val );
@@ -150,7 +153,7 @@ package com.vm.system
 		private final function RLA () : void // Relative adressing
 		{
 			
-			rad = true;
+			AF = true;
 			NSINC = 1;
 			return;
 			
@@ -159,7 +162,7 @@ package com.vm.system
 		private final function DRA () : void // Direct adressing
 		{
 			
-			rad = false;
+			AF = false;
 			NSINC = 1;
 			return;
 			
@@ -170,7 +173,7 @@ package com.vm.system
 			
 			var add:int;
 			add = getDoubleAt ( ISP + 1 );
-			if ( rad )
+			if ( AF )
 				ISP += add - 0x7FFF;
 			else
 				ISP = add;
@@ -188,7 +191,7 @@ package com.vm.system
 			reg1 = getByteAt ( ISP + 1 );
 			reg2 = getByteAt ( ISP + 2 );
 			add = getReg ( reg1 ) + ( getReg ( reg2 ) << 8 );
-			if ( rad )
+			if ( AF )
 				ISP += add - 0x7FFF;
 			else
 				ISP = add;
@@ -208,7 +211,7 @@ package com.vm.system
 			evl = getReg ( reg );
 			if ( evl != 0 )
 			{
-				if ( rad )
+				if ( AF )
 					ISP += add - 0x7FFF;
 				else
 					ISP = add;
@@ -260,6 +263,7 @@ package com.vm.system
 			pdc %= 0x10000;
 			setReg ( 10, pdc & 0xFF );
 			setReg ( 11, ( pdc & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -277,6 +281,7 @@ package com.vm.system
 			pdc %= 0x10000;
 			setReg ( 10, pdc & 0xFF );
 			setReg ( 11, ( pdc & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -294,6 +299,7 @@ package com.vm.system
 			pdc %= 0x10000;
 			setReg ( 10, pdc & 0xFF );
 			setReg ( 11, ( pdc & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -311,6 +317,7 @@ package com.vm.system
 			pdc %= 0x10000;
 			setReg ( 10, pdc & 0xFF );
 			setReg ( 11, ( pdc & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -329,6 +336,7 @@ package com.vm.system
 			val %= 0x10000;
 			setReg ( 10, val & 0xFF );
 			setReg ( 11, ( val & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -347,6 +355,7 @@ package com.vm.system
 			val %= 0x10000;
 			setReg ( 10, val & 0xFF );
 			setReg ( 11, ( val & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -365,6 +374,7 @@ package com.vm.system
 			val %= 0x10000;
 			setReg ( 10, val & 0xFF );
 			setReg ( 11, ( val & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -383,6 +393,7 @@ package com.vm.system
 			val %= 0x10000;
 			setReg ( 10, val & 0xFF );
 			setReg ( 11, ( val & 0xFF00 ) >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -478,7 +489,7 @@ package com.vm.system
 		private final function CLI () : void
 		{
 			
-			ien = false;
+			NF = false;
 			NSINC = 1;
 			return;
 			
@@ -490,7 +501,7 @@ package com.vm.system
 			var add:uint;
 			add = getDoubleAt ( ISP + 1 );
 			IRP = add;
-			ien = true;
+			NF = true;
 			NSINC = 3;
 			return;
 			
@@ -519,6 +530,7 @@ package com.vm.system
 			val = getReg ( reg ) & con;
 			setReg ( 10, val );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -535,6 +547,7 @@ package com.vm.system
 			val = getReg ( reg ) | con;
 			setReg ( 10, val );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -551,6 +564,7 @@ package com.vm.system
 			val = getReg ( reg ) ^ con;
 			setReg ( 10, val );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -567,6 +581,7 @@ package com.vm.system
 			val = getReg ( reg1 ) & getReg ( reg2 );
 			setReg ( 10, val );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -583,6 +598,7 @@ package com.vm.system
 			val = getReg ( reg1 ) | getReg ( reg2 );
 			setReg ( 10, val );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -599,6 +615,7 @@ package com.vm.system
 			val = getReg ( reg1 ) ^ getReg ( reg2 );
 			setReg ( 10, val );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
 			return;
 			
@@ -613,6 +630,7 @@ package com.vm.system
 			val = ~ getReg ( reg );
 			setReg ( 10, val & 0xFF );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 2;
 			return;
 			
@@ -679,7 +697,9 @@ package com.vm.system
 			reg = reg << snum;
 			setReg ( 10, reg );
 			setReg ( 11, reg >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
+			return;
 			
 		}
 		
@@ -695,7 +715,9 @@ package com.vm.system
 			reg = reg >> snum;
 			setReg ( 10, reg );
 			setReg ( 11, 0 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
+			return;
 			
 		}
 		
@@ -713,7 +735,9 @@ package com.vm.system
 			reg = reg << reg2;
 			setReg ( 10, reg );
 			setReg ( 11, reg >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
+			return;
 			
 		}
 		
@@ -731,7 +755,198 @@ package com.vm.system
 			reg = reg >> reg2;
 			setReg ( 10, reg );
 			setReg ( 11, reg >> 8 );
+			setFlagsFromAccumulator ()
 			NSINC = 3;
+			return;
+			
+		}
+		
+		private final function JIF () : void
+		{
+			
+			var flg:uint;
+			var add:uint;
+			add = getDoubleAt ( ISP + 1 );
+			flg = getByteAt ( ISP + 3 );
+			if ( getFlag ( flg ) )
+			{
+				
+				if ( AF )
+					ISP += add - 0x7FFF;
+				else
+					ISP = add;
+			
+			}
+			
+		}
+		
+		private final function RTLC8 () : void
+		{
+			
+			var vreg:uint;
+			var sval:uint;
+			var reg:uint;
+			var uh:uint;
+			vreg = getByteAt ( ISP + 1 );
+			sval = getByteAt ( ISP + 2 );
+			reg - getReg ( vreg );
+			sval = sval & 0x7;
+			reg = reg << sval;
+			uh = reg & 0xFF00;
+			uh = uh >> 8;
+			reg = reg | uh;
+			setReg ( 10, reg );
+			setReg ( 11, 0 );
+			setFlagsFromAccumulator ();
+			NSINC = 3;
+			return;
+			
+		}
+		
+		private final function RTRC8 () : void
+		{
+			
+			var vreg:uint;
+			var sval:uint;
+			var reg:uint;
+			var uh:uint;
+			vreg = getByteAt ( ISP + 1 );
+			sval = getByteAt ( ISP + 2 );
+			reg - getReg ( vreg );
+			sval = sval & 0x7;
+			reg << ( 8 - sval );
+			uh = reg & 0xFF00;
+			uh >> 8;
+			reg = reg | uh;
+			setReg ( 10, reg );
+			setReg ( 11, 0 );
+			setFlagsFromAccumulator ();
+			NSINC = 3;
+			return;
+			
+		}
+		
+		private final function RTLR8 () : void
+		{
+			
+			var vreg:uint;
+			var vreg2:uint;
+			var reg:uint;
+			var reg2:uint;
+			var uh:uint;
+			vreg = getByteAt ( ISP + 1 );
+			vreg2 = getByteAt ( ISP + 2 );
+			reg = getReg ( vreg );
+			reg2 = getReg ( vreg2 );
+			reg2 = reg2 & 0x7;
+			reg = reg << reg2;
+			uh = reg & 0xFF00;
+			uh = uh >> 8;
+			reg = reg | uh;
+			setReg ( 10, reg );
+			setReg ( 11, 0 );
+			setFlagsFromAccumulator ();
+			NSINC = 3;
+			return;
+			
+		}
+		
+		private final function RTRR8 () : void
+		{
+			
+			var vreg:uint;
+			var vreg2:uint;
+			var reg:uint;
+			var reg2:uint;
+			var uh:uint;
+			vreg = getByteAt ( ISP + 1 );
+			vreg2 = getByteAt ( ISP + 2 );
+			reg = getReg ( vreg );
+			reg2 = getReg ( vreg2 );
+			reg2 = reg2 & 0x7;
+			reg = reg << ( 8 - reg2 );
+			uh = reg & 0xFF00;
+			uh = uh >> 8;
+			reg = reg | uh;
+			setReg ( 10, reg );
+			setReg ( 11, 0 );
+			setFlagsFromAccumulator ();
+			NSINC = 3;
+			return;
+			
+		}
+		
+		private final function JNF () : void
+		{
+			
+			var flg:uint;
+			var add:uint;
+			add = getDoubleAt ( ISP + 1 );
+			flg = getByteAt ( ISP + 3 );
+			if ( getFlag ( flg ) )
+			{
+				
+				if ( AF )
+					ISP += add - 0x7FFF;
+				else
+					ISP = add;
+				
+			}
+			
+		}
+		
+		private final function JZ () : void // Jump if zero
+		{
+			
+			var reg:uint;
+			var evl:uint;
+			var add:int;
+			add = getDoubleAt ( ISP + 1 );
+			reg = getByteAt ( ISP + 3 );
+			evl = getReg ( reg );
+			if ( evl == 0 )
+			{
+				if ( AF )
+					ISP += add - 0x7FFF;
+				else
+					ISP = add;
+				NSINC = 0;
+				return;
+			}
+			NSINC = 4;
+			return;
+			
+		};
+		
+		// ---- [ Flag functions ] ---- //
+		private final function setFlagsFromAccumulator () : void
+		{
+			
+			ZF = ( getReg ( 10 ) == 0 && getReg ( 11 ) == 0 );
+			CF = ( getReg ( 11 ) != 0 );
+			
+		}
+		
+		private final function getFlag ( flag:uint ) : Boolean
+		{
+			
+			switch ( flag )
+			{
+				
+				case 0:
+					return CF;
+				case 1:
+					return NF;
+				case 2:
+					return ZF;
+				case 3:
+					return AF;
+				default:
+					break;
+				
+			}
+			
+			return false;
 			
 		}
 		
@@ -875,7 +1090,7 @@ package com.vm.system
 			
 		};
 		
-		public final function get readyToInterrupt () : Boolean { return ihs && ien && ito == 0 };
+		public final function get readyToInterrupt () : Boolean { return ihs && NF && ito == 0 };
 		
 	}
 	
