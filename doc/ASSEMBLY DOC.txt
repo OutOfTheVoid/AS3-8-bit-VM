@@ -3,84 +3,142 @@ Code | aruments | Operation
 NOP | [] : No operation
 
 MOV | [ register, value ] : set register to value
-[ adress, value ] : set adress to value
-[ adress, register ] : set value at adress to register
-[ register, adress ] : set register to value at adress
-[ register, register ] : set register 1 t register 2
-[ register, double register ] : set register to value pointer to by double register
-[ double register, register ] : set value at adress pointed to by double registers to register
+      [ adress, value ] : set adress to value
+      [ adress, register ] : set value at adress to register
+      [ register, adress ] : set register to value at adress
+      [ register, register ] : set register 1 t register 2
+      [ register, double register ] : set register to value pointer to by double register
+      [ double register, register ] : set value at adress pointed to by double registers to register
+      [ double register, double register ] : Set first double register to second
+      [ double register, value ] : Set a double register to a constant
 
 RLA | [] : Relative addressing mode
 
 DRA | [] : Direct addressing mode
 
-JMP | [ adress ] : Jump to adress
-[ double register ] : Jump to adress in double register
+JMP | [ address ] : Jump to adress
+      [ double register ] : Jump to address in double register
 
-JNZ | [ adress, register ] : Jump to adress if register is not 0
+JNZ | [ address, register ] : Jump to address if register is not 0
 
 INC | [ register ] : Increment register
+      [ double register ] : Increment double register
 
 DEC | [ register ] : Decrement register
+      [ double register ] : Decrement double register
 
 ADD | [ register, value ] : Add constant and register
-[ register, register ] : Add to registers
+      [ register, register ] : Add two registers
+      [ double register, value ] : Add constant and double register
+      [ double register, double register ] : Add two double registers
 
 SUB | [ register, value ] : Subtract constant from register
-[ register, register ] : Subtract register2 from register 1
+      [ register, register ] : Subtract register2 from register 1
+      [ double register, value ] : Subtract constant from register
+      [ double register, double register ] : Subtract double register 2 from double register 1
 
-MUL | [ register, value ] : Multiply constant from register
-[ register, register ] : Multiply register1 and register 2
+MUL | [ register, value ] : Multiply constant and register
+      [ register, register ] : Multiply register 1 and register 2
+      [ double register, value ] : Multiply constant and double register
+      [ double register, double register ] : Multiply double register 1 and double register 2
 
 DIV | [ register, value ] : Divide register by constant
-[ register, register ] : Divide register1 by register 2
+      [ register, register ] : Divide register 1 by register 2
+      [ double register, value ] : Divide double register by constant
+      [ double register, double register ] : Divide double register 1 by double register 2
 
-PUSH | [ value ] : Push value onto stack
-[ register ] : Push register onto stack
+PUSH | [ value ] : Push value onto stack ( 8 or 16 bit )
+       [ register ] : Push register onto stack
+       [ double register ] : Push double register onto stack
 
-POP | [ register ] : Pop register from stack to register
+POP | [ register ] : Pop from stack to register
+      [ double register ] : Pop from stack to double register
 
-INT | [ value, double register ] : Interrupt at number ( value ) with the double register as data
+INT | [ value ] : Interrupt at number
 
 CLI | [] : Clear interrupt flag
 SEI | [] : Set interrupt flag
 
-RTI | [ value ] : Allow interrupts again after ( value ) ticks
+RTI | [ value ] : Return from interrupt handler ( allows interrupts again after [ value ] clock cycles )
 
 AND | [ register, constant ] : Bitwise AND of register and constant
-[ register, register ] : Bitwise AND of two registers
+      [ register, register ] : Bitwise AND of two registers
 
 OR | [ register, constant ] : Bitwise OR of register and constant
-[ register, register ] : Bitwise OR of two registers
+     [ register, register ] : Bitwise OR of two registers
 
 XOR | [ register, constant ] : Bitwise XOR of register and constant
-[ register, register ] : Bitwise XOR of two registers
+      [ register, register ] : Bitwise XOR of two registers
 
 NOT | [ register ] : Bitwise NOT of a register
 
+BSL | [ register, value ] : Bit shift left of value in register by [ value ] bits
+      [ register, register ] : Bit shift left of value in register 1 by [ register 2 ] bits
 
-the registers are:
-Register | description
+BSR | [ register, value ] : Bit shift right of value in register by [ value ] bits
+      [ register, register ] : Bit shift right of value in register 1 by [ register 2 ] bits
+
+JIF | [ value, address ] : Jump to address if flag [ value ] is set
+
+JNF | [ value, address ] : Jump to address if flag [ value ] is not set
+
+RTL | [ register, value ] : Rotate bits of register left by [ value ] bits
+      [ register, register ] : Rotate bits of register 1 left by [ register 2 ] bits
+
+RTR | [ register, value ] : Rotate bits of register right by [ value ] bits
+      [ register, register ] : Rotate bits of register 1 right by [ register 2 ] bits
+
+JZ | [ address, register ] : jump to address if [ register ] is equal to zero
+
+SWP | [ register, register ] : Swap register values
+      [ double register, double register ] : Swap double register values
+
+
+        Flags
 -------------------------------
-AX General registers {
+0 - CF | Carry flag. Set if both accumulator registers are made non-zero by an operation
+1 - NF | Interrupt flag. Set if interrupts are enabled
+2 - ZF | Set if an operation results in zero
+3 - AF | Adressing flag, Set if adressing mode is relative
+
+        Registsers
+-------------------------------
+General registers ( 8-bit ):
+AX
 BX
 CX
-DX }
-MX Special purpose register ( store / swap )
-NX Special purpose register ( increment )
-IX- Lower half of addressing register 1
-IX+ Higher half of addressing register 1
-IY- Lower half of addressing register 2
-IY+ Higher half of addressing register 1
-IA- Lower half of accumulator
-IA+ Higher half of accumulator
+DX
 
-Compiler assertions:
-Assertion | Meaning
+Special purpose registers:
+MX
+NX
+
+General registers ( 16-bit ):
+IW-, IW+
+IZ-, IZ+
+
+Addressing registers:
+IX-, IX+
+IY-, IY+
+
+Accumulator:
+IA-, IA+
+
+Interrupt registers ( 8-bit ):
+AL
+BL
+FL
+GL
+
+Interrupt registers ( 16-bit ):
+XL-, XL+
+YL-, YL+
+
+      Compiler assertions
 ------------------------------
-#ENTRY Entry point of code
-#RELADDR Relative addressing
-#ABSADDR Direct addressing
+#ENTRY   | Entry point of code
+#RELADDR | Relative addressing
+#ABSADDR | Direct addressing
 
 Labels:
 labels are done where the label starts with a '-' and comes right before the byte you want to go to.
