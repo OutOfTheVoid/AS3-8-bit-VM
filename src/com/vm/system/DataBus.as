@@ -7,6 +7,8 @@ package com.vm.system
 		
 		public static const INTERRUPT_EVENT:String = "CPU_INTERRUPT";
 		
+		internal var _cpu:Processor;
+		
 		public function DataBus ()
 		{
 			
@@ -30,10 +32,10 @@ package com.vm.system
 			
 		}
 		
-		internal function INTERRUPT ( num:uint, busData:uint ) : void
+		internal function INTERRUPT ( num:uint ) : void
 		{
 			
-			var event:InterruptEvent = new InterruptEvent ( num, busData );
+			var event:InterruptEvent = new InterruptEvent ( num, _cpu.AL, _cpu.BL, _cpu.FL, _cpu.GL, _cpu.XL, _cpu.YL );
 			dispatchEvent ( event );
 			return;
 			

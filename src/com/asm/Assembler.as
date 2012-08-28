@@ -121,7 +121,7 @@ package com.asm
 					}
 					
 					// using said list and the tag, figure out the appropriate operation
-					opnum = solveIstruction ( blk, oargs );
+					opnum = solveInstruction ( blk, oargs );
 					op = Architechture.OPCODE_SET [ opnum ];
 					
 					// write the Opcode
@@ -143,7 +143,7 @@ package com.asm
 								{
 									
 									vdat = labels [ blocks [ i + on + 1 ].slice ( 1 ) ];
-									
+									var dbl:String = blocks [ i + on + 1 ];
 									if ( radMode )
 										vdat = vdat - byte + 0x7FFF;
 									
@@ -160,7 +160,7 @@ package com.asm
 										vdat = vdat - byte + 0x7FFF;
 									
 									bin.writeByte ( ( ( vdat & 0x00FF ) as int ) - 128 );
-									bin.writeByte ( ( ( ( vdat & 0xFF00 ) as int ) >> 8 ) - 128 );
+									bin.writeByte ( ( ( ( vdat & 0xFF00 ) >> 8 ) as int ) - 128 );
 									
 								}
 								// Hard coded
@@ -185,8 +185,17 @@ package com.asm
 								
 								vdat = getConstantValue ( blocks [ i + on + 1 ] );
 								
-								bin.writeByte ( ( vdat as int ) - 128 );
-								qoff ++;
+								if ( op.bitMode8 )
+								{
+									bin.writeByte ( ( vdat as int ) - 128 );
+									qoff ++;
+								}
+								else
+								{
+									bin.writeByte ( ( ( vdat & 0xFF ) as int ) - 128 );
+									bin.writeByte ( ( ( ( vdat & 0xFF00 ) >> 8 ) as int ) - 128 );
+									qoff += 2;
+								}
 							
 								break;
 								// Register argument
@@ -227,7 +236,7 @@ package com.asm
 						
 						case 1:
 							
-							bin.writeByte ( ( vdat as int ) -128 );
+							bin.writeByte ( ( ( vdat & 0xFF ) as int ) -128 );
 							byte ++;
 							
 							break;
@@ -235,7 +244,7 @@ package com.asm
 						case 2:
 							
 							bin.writeByte ( ( ( vdat & 0x00FF ) as int ) -128 );
-							bin.writeByte ( ( ( ( vdat & 0x00FF00 ) >> 8 ) as int ) -128 );
+							bin.writeByte ( ( ( ( vdat & 0xFF00 ) >> 8 ) as int ) -128 );
 							byte += 2;
 							
 							break;
@@ -252,8 +261,8 @@ package com.asm
 						case 4:
 							
 							bin.writeByte ( ( ( vdat & 0x000000FF ) as int ) -128 );
-							bin.writeByte ( ( ( ( vdat & 0x00FF0000 ) >> 8 ) as int ) -128 );
-							bin.writeByte ( ( ( ( vdat & 0xFF000000 ) >> 16 ) as int ) -128 );
+							bin.writeByte ( ( ( ( vdat & 0x0000FF00 ) >> 8 ) as int ) -128 );
+							bin.writeByte ( ( ( ( vdat & 0x00FF0000 ) >> 16 ) as int ) -128 );
 							bin.writeByte ( ( ( ( vdat & 0xFF000000 ) >> 24 ) as int ) -128 );
 							byte += 4;
 							
@@ -277,11 +286,20 @@ package com.asm
 			variables = new Object ();
 			var blk:String;
 			var byte:uint = 0;
+			var c8mode:Boolean = false;
+			var io:uint = 0;
+			var oargs:Vector.<String>;
+			var ato:uint = 0;
 			
 			for ( var i:uint = 0; i < blocks.length; i ++ )
 			{
 				
 				blk = blocks [ i ];
+				
+				if ( ato == 0 )
+					c8mode = true;
+				else
+					ato --;
 				
 				if ( blockIsData ( blk ) )
 				{
@@ -292,11 +310,35 @@ package com.asm
 					byte += sizeOfNum ( getVariableValue ( blk ) );
 					
 				}
+				else if ( blockIsInstruction ( blk ) )
+				{
+					
+					io = 1;
+					oargs = new Vector.<String> ();
+					
+					while ( io + i < blocks.length )
+					{
+						
+						if ( ! isArg ( blocks [ i + io ], false ) )
+							break;
+						
+						oargs.push ( getArgType ( blocks [ i + io ] ) );
+						io ++;
+						
+					}
+					
+					io = solveInstruction ( blk, oargs );
+					c8mode = Architechture.OPCODE_SET [ io ].bitMode8;
+					ato = Architechture.OPCODE_SET [ io ].arguments.length;
+					
+					byte ++;
+					
+				}
 				else if ( blockIsConstant ( blk ) )
 				{
 					
 					var num:uint = getConstantValue ( blk );
-					byte += sizeOfNum ( num );
+					byte += ( c8mode ) ? sizeOfNum ( num ) : Math.max ( sizeOfNum ( num ), 2 );
 					
 				}
 				else if ( blockIsRefrence ( blk ) || blockIsDoubleRegister ( blk ) || blockIsVariable ( blk ) )
@@ -316,7 +358,7 @@ package com.asm
 		};
 		
 		//Solves for the appropriat operation based on the tag and arguments
-		private final function solveIstruction ( Itag:String, argTypes:Vector.<String> ):uint
+		private final function solveInstruction ( Itag:String, argTypes:Vector.<String> ):uint
 		{
 			
 			var i:Instruction;
@@ -372,7 +414,7 @@ package com.asm
 		}
 		
 		//Determines of a block is a valid argument type
-		private final function isArg ( block:String ) : Boolean
+		private final function isArg ( block:String, inst_8:Boolean = true ) : Boolean
 		{
 			
 			if ( blockIsData ( block ) )
@@ -382,7 +424,7 @@ package com.asm
 				return false;
 			
 			if ( blockIsConstant ( block ) )
-				if ( sizeOfNum ( getConstantValue ( block ) ) > 2 )
+				if ( sizeOfNum ( getConstantValue ( block ) ) > ( ( inst_8 ) ? 2 : 3 ) )
 					return false;
 			
 			if ( blockIsAssertion ( block ) )
@@ -406,7 +448,7 @@ package com.asm
 				return Args.DOUBLE_REGISTER;
 			
 			if ( blockIsRefrence ( block ) || blockIsVariable ( block ) )
-				return Args.ADDRESS; 
+				return Args.ADDRESS;
 			
 			if ( blockIsConstant ( block ) )
 			{

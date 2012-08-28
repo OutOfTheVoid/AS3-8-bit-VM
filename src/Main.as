@@ -14,7 +14,6 @@ package
 	{
 		
 		private var mem:Memory;
-		private var pmem:PagedMemory;
 		private var bus:DataBus;
 		private var cpu:Processor;
 		private var asm:Assembler;
@@ -24,57 +23,35 @@ package
 			
 			asm = new Assembler ();
 			bus = new DataBus ();
-			//mem = new Memory ( 0x10000 );      // Maximum for 16-bit adress space
-			pmem = new PagedMemory ( 0x10000, 1024, 1024, 255 ); // again full 16-bit adress space, but with 255 extra sets of 1,024 bytes. ( 326,145 bytes total )
-			cpu = new Processor ( pmem, bus );
+			mem = new Memory ( 0x10000 );      // Maximum for 16-bit adress space
+			cpu = new Processor ( mem, bus );
 			
 			asm.loadASM ( 
-				"#ABSADDR " +
-				"#ENTRY " +
-				"MOV CX 3 " +
-				"MOV BX 1 " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"RTR CX BX " +
-				"MOV CX IA- " +
-				"INT 9 CX!AX " +
-				"-ifj " +
-				"JMP $ifj"
+				"MOV IA-!IA+ 1000 " +
+				"ADD IA-!IA+ 200 " +
+				"MOV AL!BL IA-!IA+ " +
+				"INT 8 " +
+				"-gh " +
+				"JMP $gh " +
+				"-inthandle " +
+				"CLI " +
+				"PUSH AX " +
+				"PUSH IA- " +
+				"PUSH IA+ " +
+				"MOV AX AL " +
+				""
 				);
 			
-			asm.compile ();
+			trace ( asm.compile () );
 			
-			//mem.flushZeros ();
-			//mem.writeFile ( 0, asm.getBinary () );
-			
-			pmem.flushZeros ();
-			pmem.writeFile ( 0, asm.getBinary (), true, true, 0 );
+			mem.flushZeros ();
+			mem.writeFile ( 0, asm.getBinary () );
 			
 			cpu.reset ( asm.entryAdress );
 			
 			bus.startListeningForInterrupt ( 10, int10 );
 			bus.startListeningForInterrupt ( 9, int9 );
-			bus.startListeningForInterrupt ( 2, int2 );
+			bus.startListeningForInterrupt ( 8, int8 );
 			
 			for ( var i:uint = 0; i < 10000; i ++ )
 				cpu.step ();
@@ -84,21 +61,21 @@ package
 		private function int10 ( I:InterruptEvent ) : void
 		{
 			
-			trace ( String.fromCharCode ( I.data ) );
+			trace ( String.fromCharCode ( I.A | ( I.B << 8 ) ) );
 			
 		}
 		
 		private function int9 ( I:InterruptEvent ) : void
 		{
 			
-			trace ( I.data.toString ( 2 ) );
+			trace ( I.A.toString ( 2 ) );
 			
 		}
 		
-		private function int2 ( I:InterruptEvent ) : void
+		private function int8 ( I:InterruptEvent ) : void
 		{
 			
-			pmem.page = I.data;
+			trace ( ( I.A + ( I.B << 8 ) ).toString ( 10 ) );
 			
 		}
 		
